@@ -1,17 +1,13 @@
 runtime: nodejs12
 
 handlers:
-  - url: /_nuxt
-    static_dir: .nuxt/dist/client
+  - url: /
+    static_files: index.html
+    upload: index.html
     secure: always
-
-  - url: /(.*\.(gif|png|jpg|ico|txt))$
-    static_files: static/\1
-    upload: static/.*\.(gif|png|jpg|ico|txt)$
-    secure: always
-
-  - url: /.*
-    script: auto
+  - url: /(.*)
+    static_files: \1
+    upload: (.*)
     secure: always
 
 env_variables:
