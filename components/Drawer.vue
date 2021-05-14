@@ -6,7 +6,7 @@
           Immopricing
         </v-list-item-title>
         <v-list-item-subtitle>
-          {{ user.email }}
+          {{ user ? user.email : 'Chargement...' }}
         </v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>
@@ -49,7 +49,7 @@ export default {
   computed: {
     ...mapState({
       user: (state) => {
-        return state.user.user ? state.user.user : { email: 'Chargement...' }
+        return state.user.user
       }
     })
   }
