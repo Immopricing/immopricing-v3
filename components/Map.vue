@@ -22,6 +22,7 @@ export default {
       polygon: (state) => state.maps.polygon,
       bounds: (state) => state.maps.bounds,
       houses: (state) => state.houses.houses,
+      displayedHouses: (state) => state.houses.displayedHouses,
       selectedAddress: (state) => state.maps.selectedAddress,
       selectedHouse: (state) => state.houses.selectedHouse,
     }),
@@ -71,7 +72,7 @@ export default {
         this.map.setZoom(19);
       }
     },
-    houses(houses) {
+    displayedHouses(houses) {
       this.addHomes(houses);
     },
   },

@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col justify-around items-center h-[100%]">
-    <div class="w-[100%] h-12 flex items-center justify-center">
+    <div class="w-[100%] h-12 my-4 flex items-center justify-center">
       <MapsAutocomplete />
     </div>
 
