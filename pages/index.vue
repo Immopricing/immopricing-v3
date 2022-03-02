@@ -14,6 +14,7 @@ import { Map } from "../components/Map.vue";
 import { Form } from "../components/form/Form.vue";
 import { findPostCode } from "../helpers/geo_helpers";
 import { mapState, mapActions, mapMutations } from "vuex";
+import { levenshteinDistance } from "../helpers/utils"
 
 export default {
   computed: mapState({
@@ -28,9 +29,26 @@ export default {
     ...mapMutations({
       setHouses: "houses/setHouses",
     }),
-    async loadCityDetails(postCode) {
+    searchByVicinity(vicinity, cityDetails) {
+      if (cityDetails.length === 0) {
+        return {};
+      }
+      const found = cityDetails.find(city => city.nom.toLowerCase() === vicinity.toLowerCase());
+      if (found) {
+        return found;
+      }
+      cityDetails = cityDetails.map(city => {
+        city.levenshteinDistance = levenshteinDistance(city.nom, vicinity);
+        return city;
+      });
+      const distances = cityDetails.map(city => city.levenshteinDistance);
+      const bestIdx = distances.findIndex(d => d === Math.min(...distances));
+      return cityDetails[bestIdx];
+    },
+    async loadCityDetails(postCode, vicinity) {
       this.$nuxt.$loading.start();
       this.getCityDetails(postCode).then((details) => {
+        details = Array.isArray(details) ? this.searchByVicinity(vicinity, details) : details;
         this.getPricesByCity(details).then((res) => {
           this.$nuxt.$loading.finish();
           this.$store.commit("houses/setHouses", res);
@@ -49,7 +67,7 @@ export default {
         console.warn("no postcode in", value);
         return;
       }
-      this.loadCityDetails(postCode.long_name);
+      this.loadCityDetails(postCode.long_name, value.vicinity);
       this.getPolygon(value.formatted_address).then((polygon) => {
         this.$store.commit("maps/setPolygon", polygon);
       });
